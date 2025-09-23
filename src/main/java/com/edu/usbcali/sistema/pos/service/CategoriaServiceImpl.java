@@ -1,0 +1,68 @@
+package com.edu.usbcali.sistema.pos.service;
+
+import java.util.List;
+
+import org.springframework.stereotype.Service;
+
+import com.edu.usbcali.sistema.pos.domain.Categoria;
+import com.edu.usbcali.sistema.pos.dto.CategoriaRequestDTO;
+import com.edu.usbcali.sistema.pos.dto.CategoriaResponseDTO;
+import com.edu.usbcali.sistema.pos.mapper.CategoriaMapper;
+import com.edu.usbcali.sistema.pos.repository.CategoriaRepository;
+
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
+import lombok.RequiredArgsConstructor;
+
+@Service
+@RequiredArgsConstructor
+
+public class CategoriaServiceImpl implements CategoriaService {
+
+    private final CategoriaRepository categoriaRepository;
+
+    // @Override
+    // @Transactional(readOnly = true)
+    // public List<String> getCategoriasString() {
+    // List<Categoria> categorias = categoriaRepository.findAll();
+    // List<String> categoriasString = new ArrayList<>();
+    // for (Categoria categoria : categorias) {
+    // categoriasString.add(categoria.toString());
+    // }
+    // return categoriasString;
+    // }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<CategoriaResponseDTO> getCategoriasResponseDTO() {
+        // List<Categoria> categorias = categoriaRepository.findAll();
+        // List<CategoriaResponseDTO> responseDTOS =
+        // CategoriaMapper.entityToDtoList(categorias);
+        // return responseDTOS;
+        return CategoriaMapper.entityToDtoList(categoriaRepository.findAll());
+
+    }
+
+    @Override
+    @Transactional(propagation = Propagation.REQUIRED)
+    public CategoriaResponseDTO saveCategoria(CategoriaRequestDTO categoriaRequestDTO) {
+        if (categoriaRequestDTO == null) {
+            throw new IllegalArgumentException("El objeto categoriaRequestDTO no puede ser nulo");
+        }
+
+        if (categoriaRequestDTO.getNombre() == null || categoriaRequestDTO.getNombre().isBlank()) {
+            throw new IllegalArgumentException("El nombre de la categoria no puede ser nulo o vacio");
+        }
+
+        if (categoriaRepository.existsByNombre(categoriaRequestDTO.getNombre())) {
+            throw new IllegalArgumentException(
+                    "Ya existe una categoria con el nombre: " + categoriaRequestDTO.getNombre());
+        }
+
+        Categoria categoria = CategoriaMapper.requestDtoToEntity(categoriaRequestDTO);
+        categoria = categoriaRepository.save(categoria);
+        // Convertir la entidad guardada de nuevo a DTO de respuesta
+        return CategoriaMapper.entityToDto(categoria);
+    }
+
+}
