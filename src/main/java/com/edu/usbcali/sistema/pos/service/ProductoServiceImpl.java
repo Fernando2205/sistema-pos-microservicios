@@ -1,5 +1,6 @@
 package com.edu.usbcali.sistema.pos.service;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 import org.springframework.stereotype.Service;
@@ -26,7 +27,7 @@ public class ProductoServiceImpl implements ProductoService {
     @Override
     @Transactional(readOnly = true)
     public List<ProductoResponseDTO> getProductosResponseDTO() {
-        return ProductoMapper.entityToResponseDtoList(productoRepository.findAll());
+        return ProductoMapper.entityToResponseDtoList(productoRepository.findAllByOrderByIdAsc());
     }
 
     @Override
@@ -45,6 +46,14 @@ public class ProductoServiceImpl implements ProductoService {
                     "Ya existe un producto con el nombre: " + productoRequestDTO.getNombre());
         }
 
+        if (productoRequestDTO.getCategoriaId() == null || productoRequestDTO.getCategoriaId() <= 0) {
+            throw new IllegalArgumentException("El id de la categoria no puede ser nulo, vacio o menor o igual a cero");
+        }
+
+        if (productoRequestDTO.getPrecio() == null || productoRequestDTO.getPrecio().compareTo(BigDecimal.ZERO) <= 0) {
+            throw new IllegalArgumentException("El precio no puede ser nulo, vacio o menor o igual a cero");
+        }
+
         Categoria categoria = categoriaRepository.findById(productoRequestDTO.getCategoriaId())
                 .orElseThrow(() -> new Exception("Categoria no encontrada"));
 
@@ -53,5 +62,87 @@ public class ProductoServiceImpl implements ProductoService {
         producto = productoRepository.save(producto);
 
         return ProductoMapper.entityToResponseDto(producto);
+    }
+
+    @Override
+    @Transactional(readOnly = false, propagation = Propagation.REQUIRED)
+    public ProductoResponseDTO updateProducto(Integer id, ProductoRequestDTO productoRequestDTO) throws Exception {
+        if (productoRequestDTO == null) {
+            throw new IllegalArgumentException("El objeto productoRequestDTO no puede ser nulo");
+        }
+        if (productoRequestDTO.getNombre() == null || productoRequestDTO.getNombre().isBlank()) {
+            throw new IllegalArgumentException("El nombre del producto no puede ser nulo o vacio");
+        }
+
+        if (productoRequestDTO.getCategoriaId() == null || productoRequestDTO.getCategoriaId() <= 0) {
+            throw new IllegalArgumentException("El id de la categoria no puede ser nulo, vacio o menor o igual a cero");
+        }
+
+        if (productoRequestDTO.getPrecio() == null || productoRequestDTO.getPrecio().compareTo(BigDecimal.ZERO) <= 0) {
+            throw new IllegalArgumentException("El precio no puede ser nulo, vacio o menor o igual a cero");
+        }
+
+        Producto productoExistente = productoRepository.findById(id)
+                .orElseThrow(() -> new Exception("Producto no encontrado"));
+        Producto productoMismoNombre = productoRepository
+                .findByNombre(productoRequestDTO.getNombre());
+
+        if (productoMismoNombre != null && !productoMismoNombre.getId().equals(id)) {
+            throw new IllegalArgumentException(
+                    "Ya existe un producto con el nombre: " + productoRequestDTO.getNombre());
+        }
+
+        productoExistente.setNombre(productoRequestDTO.getNombre());
+        productoExistente.setDescripcion(productoRequestDTO.getDescripcion());
+        productoExistente.setPrecio(productoRequestDTO.getPrecio());
+        productoExistente.setDisponible(productoRequestDTO.getDisponible());
+        Categoria categoria = categoriaRepository.findById(productoRequestDTO.getCategoriaId())
+                .orElseThrow(() -> new Exception("Categoria no encontrada"));
+        productoExistente.setCategoria(categoria);
+        Producto productoActualizado = productoRepository.save(productoExistente);
+        return ProductoMapper.entityToResponseDto(productoActualizado);
+
+    }
+
+    @Override
+    @Transactional(readOnly = false, propagation = Propagation.REQUIRED)
+    public ProductoResponseDTO updatePartialProducto(Integer id, ProductoRequestDTO productoRequestDTO)
+            throws Exception {
+        if (id == null || id <= 0) {
+            throw new IllegalArgumentException("El id no puede ser nulo, vacio o menor o igual a cero");
+        }
+
+        if (productoRequestDTO == null) {
+            throw new IllegalArgumentException("El objeto productoRequestDTO no puede ser nulo");
+        }
+        Producto productoExistente = productoRepository.findById(id)
+                .orElseThrow(() -> new Exception("Producto no encontrado"));
+        Producto productoMismoNombre = productoRepository
+                .findByNombre(productoRequestDTO.getNombre());
+
+        if (productoMismoNombre != null && !productoMismoNombre.getId().equals(id)) {
+            throw new IllegalArgumentException(
+                    "Ya existe un producto con el nombre: " + productoRequestDTO.getNombre());
+        }
+
+        if (productoRequestDTO.getNombre() != null && !productoRequestDTO.getNombre().isBlank()) {
+            productoExistente.setNombre(productoRequestDTO.getNombre());
+        }
+        if (productoRequestDTO.getDescripcion() != null) {
+            productoExistente.setDescripcion(productoRequestDTO.getDescripcion());
+        }
+        if (productoRequestDTO.getPrecio() != null && productoRequestDTO.getPrecio().compareTo(BigDecimal.ZERO) > 0) {
+            productoExistente.setPrecio(productoRequestDTO.getPrecio());
+        }
+        if (productoRequestDTO.getDisponible() != null) {
+            productoExistente.setDisponible(productoRequestDTO.getDisponible());
+        }
+        if (productoRequestDTO.getCategoriaId() != null && productoRequestDTO.getCategoriaId() > 0) {
+            Categoria categoria = categoriaRepository.findById(productoRequestDTO.getCategoriaId())
+                    .orElseThrow(() -> new Exception("Categoria no encontrada"));
+            productoExistente.setCategoria(categoria);
+        }
+        Producto productoActualizado = productoRepository.save(productoExistente);
+        return ProductoMapper.entityToResponseDto(productoActualizado);
     }
 }
