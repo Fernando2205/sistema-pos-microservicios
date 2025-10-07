@@ -31,7 +31,7 @@ public class Producto {
     private String descripcion;
     @Column(name = "precio", nullable = false, precision = 10, scale = 2)
     private BigDecimal precio;
-    @Column(name = "disponible", nullable = false, columnDefinition = "BOOLEAN DEFAULT TRUE")
+    @Column(name = "disponible", columnDefinition = "BOOLEAN DEFAULT TRUE")
     private Boolean disponible;
     @ManyToOne
     @JoinColumn(name = "categoria_id", referencedColumnName = "id")
