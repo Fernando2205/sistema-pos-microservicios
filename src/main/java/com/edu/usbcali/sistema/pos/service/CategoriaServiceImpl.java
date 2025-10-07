@@ -39,7 +39,7 @@ public class CategoriaServiceImpl implements CategoriaService {
         // List<CategoriaResponseDTO> responseDTOS =
         // CategoriaMapper.entityToDtoList(categorias);
         // return responseDTOS;
-        return CategoriaMapper.entityToDtoList(categoriaRepository.findAll());
+        return CategoriaMapper.entityToDtoList(categoriaRepository.findAllByOrderByIdAsc());
 
     }
 
@@ -65,4 +65,33 @@ public class CategoriaServiceImpl implements CategoriaService {
         return CategoriaMapper.entityToDto(categoria);
     }
 
+    @Override
+    @Transactional(propagation = Propagation.REQUIRED)
+    public CategoriaResponseDTO updateCategoria(Integer id, CategoriaRequestDTO categoriaRequestDTO) throws Exception {
+        if (id == null || id <= 0) {
+            throw new IllegalArgumentException("El id de la categoria no puede ser nulo, vacio o menor o igual a cero");
+        }
+
+        if (categoriaRequestDTO == null) {
+            throw new IllegalArgumentException("El objeto categoriaRequestDTO no puede ser nulo");
+        }
+
+        if (categoriaRequestDTO.getNombre() == null || categoriaRequestDTO.getNombre().isBlank()) {
+            throw new IllegalArgumentException("El nombre de la categoria no puede ser nulo o vacio");
+        }
+
+        Categoria categoriaExistente = categoriaRepository.findById(id)
+                .orElseThrow(() -> new Exception("Categoria con id " + id + " no encontrada"));
+
+        Categoria categoriaMismoNombre = categoriaRepository.findByNombre(categoriaRequestDTO.getNombre());
+        if (categoriaMismoNombre != null && !categoriaMismoNombre.getId().equals(id)) {
+            throw new IllegalArgumentException(
+                    "Ya existe una categoria con el nombre: " + categoriaRequestDTO.getNombre());
+        }
+
+        categoriaExistente.setNombre(categoriaRequestDTO.getNombre());
+        Categoria categoriaActualizada = categoriaRepository.save(categoriaExistente);
+        return CategoriaMapper.entityToDto(categoriaActualizada);
+
+    }
 }
