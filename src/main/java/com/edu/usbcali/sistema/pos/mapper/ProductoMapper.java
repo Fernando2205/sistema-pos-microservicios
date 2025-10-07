@@ -29,7 +29,7 @@ public class ProductoMapper {
                 .nombre(dto.getNombre())
                 .descripcion(dto.getDescripcion())
                 .precio(dto.getPrecio())
-                .disponible(dto.getDisponible())
+                .disponible(dto.getDisponible() != null ? dto.getDisponible() : true)
                 .build();
     }
 }
