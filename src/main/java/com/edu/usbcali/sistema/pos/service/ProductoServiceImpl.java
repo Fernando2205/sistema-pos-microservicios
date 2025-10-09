@@ -81,6 +81,12 @@ public class ProductoServiceImpl implements ProductoService {
         if (productoRequestDTO.getPrecio() == null || productoRequestDTO.getPrecio().compareTo(BigDecimal.ZERO) <= 0) {
             throw new IllegalArgumentException("El precio no puede ser nulo, vacio o menor o igual a cero");
         }
+        if (productoRequestDTO.getDescripcion() == null) {
+            throw new IllegalArgumentException("El campo descripcion no puede ser nulo");
+        }
+        if (productoRequestDTO.getDisponible() == null) {
+            throw new IllegalArgumentException("El campo disponible no puede ser nulo");
+        }
 
         Producto productoExistente = productoRepository.findById(id)
                 .orElseThrow(() -> new Exception("Producto no encontrado"));
