@@ -10,7 +10,7 @@ CREATE TABLE empleados (
     id INT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
     nombre VARCHAR(100) NOT NULL,
     rol VARCHAR(50) NOT NULL, -- mesero, cocinero, admin
-    email VARCHAR(100),
+    email VARCHAR(100) UNIQUE NOT NULL,
     contraseña TEXT NOT NULL
 );
 
