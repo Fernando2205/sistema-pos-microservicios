@@ -46,6 +46,14 @@ public class CategoriaServiceImpl implements CategoriaService {
     }
 
     @Override
+    @Transactional(readOnly = true)
+    public CategoriaResponseDTO getCategoriaResponseById(Integer id) {
+        Categoria categoria = categoriaRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Categoria con id " + id + " no encontrada"));
+        return CategoriaMapper.entityToDto(categoria);
+    }
+
+    @Override
     @Transactional(propagation = Propagation.REQUIRED)
     public CategoriaResponseDTO saveCategoria(CategoriaRequestDTO categoriaRequestDTO) {
         if (categoriaRequestDTO == null) {

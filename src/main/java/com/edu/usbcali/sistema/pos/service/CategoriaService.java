@@ -9,6 +9,8 @@ public interface CategoriaService {
 
     List<CategoriaResponseDTO> getCategoriasResponseDTO();
 
+    CategoriaResponseDTO getCategoriaResponseById(Integer id);
+
     CategoriaResponseDTO saveCategoria(CategoriaRequestDTO categoriaRequestDTO);
 
     CategoriaResponseDTO updateCategoria(Integer id, CategoriaRequestDTO categoriaRequestDTO);

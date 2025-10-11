@@ -36,6 +36,11 @@ public class CategoriaController {
 
     }
 
+    @GetMapping("/{id}")
+    public CategoriaResponseDTO getCategoriaById(@PathVariable Integer id) {
+        return categoriaService.getCategoriaResponseById(id);
+    }
+
     @PostMapping("/save")
     public ResponseEntity<CategoriaResponseDTO> saveCategoriaEntity(
             @RequestBody CategoriaRequestDTO categoriaRequestDTO) {
