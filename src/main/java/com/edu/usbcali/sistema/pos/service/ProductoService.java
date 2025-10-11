@@ -15,4 +15,6 @@ public interface ProductoService {
     ProductoResponseDTO updateProducto(Integer id, ProductoRequestDTO productoRequestDTO);
 
     ProductoResponseDTO updatePartialProducto(Integer id, ProductoRequestDTO productoRequestDTO);
+
+    void deleteProducto(Integer id);
 }

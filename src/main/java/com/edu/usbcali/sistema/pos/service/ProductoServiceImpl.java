@@ -160,4 +160,17 @@ public class ProductoServiceImpl implements ProductoService {
         Producto productoActualizado = productoRepository.save(productoExistente);
         return ProductoMapper.entityToResponseDto(productoActualizado);
     }
+
+    @Override
+    @Transactional(readOnly = false, propagation = Propagation.REQUIRED)
+    public void deleteProducto(Integer id) {
+        if (id == null || id <= 0) {
+            throw new ValidationException("El id no puede ser nulo, vacio o menor o igual a cero");
+        }
+
+        Producto productoExistente = productoRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Producto no encontrado"));
+
+        productoRepository.delete(productoExistente);
+    }
 }
