@@ -36,15 +36,19 @@ CREATE DATABASE sistema_pos;
 ### Categorías
 
 - GET `/api/categoria/all` - Listar todas las categorías
+- GET `/api/categoria/{id}` - Obtener una categoría por id
 - POST `/api/categoria/save` - Crear nueva categoría
 - PUT `/api/categoria/update/{id}` - Actualizar una categoria existente
+- DELETE `/api/categoria/delete/{id}` - Eliminar una categoria existente
 
 ### Productos
 
 - GET `/api/producto/all` - Listar todos los productos
+- GET `/api/producto/{id}` - Obtener un producto por id
 - POST `/api/producto/save` - Crear nuevo producto
 - PUT `/api/producto/update/{id}` - Actualizar completamente producto existente
-- PATCH `/api/producto/partial-update{id}` - Actualizar parcialmente un producto existente
+- PATCH `/api/producto/partial-update/{id}` - Actualizar parcialmente un producto existente
+- DELETE `/api/producto/delete/{id}` - Eliminar un producto existente
 
 ## Estructura de Base de Datos
 
