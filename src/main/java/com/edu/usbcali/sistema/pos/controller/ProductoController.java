@@ -30,6 +30,11 @@ public class ProductoController {
         return productoService.getProductosResponseDTO();
     }
 
+    @GetMapping("/{id}")
+    public ProductoResponseDTO getProductoById(@PathVariable Integer id) {
+        return productoService.getProductoResponseById(id);
+    }
+
     @PostMapping("/save")
     public ResponseEntity<ProductoResponseDTO> saveProductoEntity(@RequestBody ProductoRequestDTO productoRequestDTO) {
         return new ResponseEntity<>(productoService.saveProducto(productoRequestDTO), HttpStatus.CREATED);

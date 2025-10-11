@@ -8,6 +8,8 @@ import com.edu.usbcali.sistema.pos.dto.ProductoResponseDTO;
 public interface ProductoService {
     List<ProductoResponseDTO> getProductosResponseDTO();
 
+    ProductoResponseDTO getProductoResponseById(Integer id);
+
     ProductoResponseDTO saveProducto(ProductoRequestDTO productoRequestDTO);
 
     ProductoResponseDTO updateProducto(Integer id, ProductoRequestDTO productoRequestDTO);

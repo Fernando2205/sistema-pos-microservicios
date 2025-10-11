@@ -33,6 +33,14 @@ public class ProductoServiceImpl implements ProductoService {
     }
 
     @Override
+    @Transactional(readOnly = true)
+    public ProductoResponseDTO getProductoResponseById(Integer id) {
+        Producto producto = productoRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Producto con el id " + id + " no encontrado"));
+        return ProductoMapper.entityToResponseDto(producto);
+    }
+
+    @Override
     @Transactional(readOnly = false, propagation = Propagation.REQUIRED)
     public ProductoResponseDTO saveProducto(ProductoRequestDTO productoRequestDTO) {
 
