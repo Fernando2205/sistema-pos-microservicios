@@ -104,4 +104,17 @@ public class CategoriaServiceImpl implements CategoriaService {
         return CategoriaMapper.entityToDto(categoriaActualizada);
 
     }
+
+    @Override
+    @Transactional(readOnly = false, propagation = Propagation.REQUIRED)
+    public void deleteCategoria(Integer id) {
+        if (id == null || id <= 0) {
+            throw new ValidationException("El id de la categoria no puede ser nulo, vacio o menor o igual a cero");
+        }
+
+        Categoria categoriaExistente = categoriaRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Categoria con id " + id + " no encontrada"));
+
+        categoriaRepository.delete(categoriaExistente);
+    }
 }

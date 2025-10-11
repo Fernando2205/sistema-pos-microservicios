@@ -15,4 +15,6 @@ public interface CategoriaService {
 
     CategoriaResponseDTO updateCategoria(Integer id, CategoriaRequestDTO categoriaRequestDTO);
 
+    void deleteCategoria(Integer id);
+
 }
