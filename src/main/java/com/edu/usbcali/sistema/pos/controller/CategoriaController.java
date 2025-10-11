@@ -38,7 +38,7 @@ public class CategoriaController {
 
     @PostMapping("/save")
     public ResponseEntity<CategoriaResponseDTO> saveCategoriaEntity(
-            @RequestBody CategoriaRequestDTO categoriaRequestDTO) throws Exception {
+            @RequestBody CategoriaRequestDTO categoriaRequestDTO) {
         return new ResponseEntity<>(
                 categoriaService.saveCategoria(categoriaRequestDTO), HttpStatus.CREATED);
     }
@@ -46,7 +46,7 @@ public class CategoriaController {
     @PutMapping("/update/{id}")
     public ResponseEntity<CategoriaResponseDTO> updateCategoriaEntity(
             @PathVariable Integer id,
-            @RequestBody CategoriaRequestDTO categoriaRequestDTO) throws Exception {
+            @RequestBody CategoriaRequestDTO categoriaRequestDTO) {
 
         return new ResponseEntity<>(categoriaService.updateCategoria(id, categoriaRequestDTO), HttpStatus.OK);
     }

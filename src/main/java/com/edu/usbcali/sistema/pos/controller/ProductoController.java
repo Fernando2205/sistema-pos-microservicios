@@ -31,15 +31,14 @@ public class ProductoController {
     }
 
     @PostMapping("/save")
-    public ResponseEntity<ProductoResponseDTO> saveProductoEntity(@RequestBody ProductoRequestDTO productoRequestDTO)
-            throws Exception {
+    public ResponseEntity<ProductoResponseDTO> saveProductoEntity(@RequestBody ProductoRequestDTO productoRequestDTO) {
         return new ResponseEntity<>(productoService.saveProducto(productoRequestDTO), HttpStatus.CREATED);
     }
 
     @PutMapping("/update/{id}")
     public ResponseEntity<ProductoResponseDTO> updateProductoEntity(
             @PathVariable Integer id,
-            @RequestBody ProductoRequestDTO productoRequestDTO) throws Exception {
+            @RequestBody ProductoRequestDTO productoRequestDTO) {
         return new ResponseEntity<>(
                 productoService.updateProducto(id, productoRequestDTO),
                 HttpStatus.OK);
@@ -48,7 +47,7 @@ public class ProductoController {
     @PatchMapping("/partial-update/{id}")
     public ResponseEntity<ProductoResponseDTO> updatePartialProductoEntity(
             @PathVariable Integer id,
-            @RequestBody ProductoRequestDTO productoRequestDTO) throws Exception {
+            @RequestBody ProductoRequestDTO productoRequestDTO) {
         return new ResponseEntity<>(
                 productoService.updatePartialProducto(id, productoRequestDTO),
                 HttpStatus.OK);

@@ -7,6 +7,8 @@ import org.springframework.stereotype.Service;
 import com.edu.usbcali.sistema.pos.domain.Categoria;
 import com.edu.usbcali.sistema.pos.dto.CategoriaRequestDTO;
 import com.edu.usbcali.sistema.pos.dto.CategoriaResponseDTO;
+import com.edu.usbcali.sistema.pos.exception.ResourceNotFoundException;
+import com.edu.usbcali.sistema.pos.exception.ValidationException;
 import com.edu.usbcali.sistema.pos.mapper.CategoriaMapper;
 import com.edu.usbcali.sistema.pos.repository.CategoriaRepository;
 
@@ -47,15 +49,15 @@ public class CategoriaServiceImpl implements CategoriaService {
     @Transactional(propagation = Propagation.REQUIRED)
     public CategoriaResponseDTO saveCategoria(CategoriaRequestDTO categoriaRequestDTO) {
         if (categoriaRequestDTO == null) {
-            throw new IllegalArgumentException("El objeto categoriaRequestDTO no puede ser nulo");
+            throw new ValidationException("El objeto categoriaRequestDTO no puede ser nulo");
         }
 
         if (categoriaRequestDTO.getNombre() == null || categoriaRequestDTO.getNombre().isBlank()) {
-            throw new IllegalArgumentException("El nombre de la categoria no puede ser nulo o vacio");
+            throw new ValidationException("El nombre de la categoria no puede ser nulo o vacio");
         }
 
         if (categoriaRepository.existsByNombre(categoriaRequestDTO.getNombre())) {
-            throw new IllegalArgumentException(
+            throw new ValidationException(
                     "Ya existe una categoria con el nombre: " + categoriaRequestDTO.getNombre());
         }
 
@@ -67,25 +69,25 @@ public class CategoriaServiceImpl implements CategoriaService {
 
     @Override
     @Transactional(propagation = Propagation.REQUIRED)
-    public CategoriaResponseDTO updateCategoria(Integer id, CategoriaRequestDTO categoriaRequestDTO) throws Exception {
+    public CategoriaResponseDTO updateCategoria(Integer id, CategoriaRequestDTO categoriaRequestDTO) {
         if (id == null || id <= 0) {
-            throw new IllegalArgumentException("El id de la categoria no puede ser nulo, vacio o menor o igual a cero");
+            throw new ValidationException("El id de la categoria no puede ser nulo, vacio o menor o igual a cero");
         }
 
         if (categoriaRequestDTO == null) {
-            throw new IllegalArgumentException("El objeto categoriaRequestDTO no puede ser nulo");
+            throw new ValidationException("El objeto categoriaRequestDTO no puede ser nulo");
         }
 
         if (categoriaRequestDTO.getNombre() == null || categoriaRequestDTO.getNombre().isBlank()) {
-            throw new IllegalArgumentException("El nombre de la categoria no puede ser nulo o vacio");
+            throw new ValidationException("El nombre de la categoria no puede ser nulo o vacio");
         }
 
         Categoria categoriaExistente = categoriaRepository.findById(id)
-                .orElseThrow(() -> new Exception("Categoria con id " + id + " no encontrada"));
+                .orElseThrow(() -> new ResourceNotFoundException("Categoria con id " + id + " no encontrada"));
 
         Categoria categoriaMismoNombre = categoriaRepository.findByNombre(categoriaRequestDTO.getNombre());
         if (categoriaMismoNombre != null && !categoriaMismoNombre.getId().equals(id)) {
-            throw new IllegalArgumentException(
+            throw new ValidationException(
                     "Ya existe una categoria con el nombre: " + categoriaRequestDTO.getNombre());
         }
 
